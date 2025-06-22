@@ -8,7 +8,7 @@ def history_response_to_df(
     response: list[dict], endpoint: HistoryEndpoint, index_col: str | None = None
 ) -> pd.DataFrame:
     """
-    Convert a history response to a DataFrame.
+    Parse a history response to a DataFrame.
 
     Args:
         response: The JSON response from an history endpoint.
@@ -40,7 +40,7 @@ def history_response_to_df(
 
 
 def response_to_df(response: list[dict], data_type: str | None = None) -> pd.DataFrame:
-    """Convert a Coinalyze response to a DataFrame."""
+    """Parse a Coinalyze response to a DataFrame."""
     df = pd.DataFrame(response)
     for col in ["expire_at", "update"]:
         if col in df.columns:

@@ -18,11 +18,6 @@ def set_start_and_end(start: Time | None = None, end: Time | None = None) -> tup
     return start, end
 
 
-def bool_to_string(b: bool) -> str:
-    """Convert a boolean to a string equivalent."""
-    return "true" if b else "false"
-
-
 def to_timestamp(date: Time) -> int:
     """Convert a datetime or date to a POSIX timestamp."""
     if isinstance(date, dt.datetime):
@@ -34,4 +29,12 @@ def to_timestamp(date: Time) -> int:
 
 def from_timestamp(timestamp: int) -> dt.datetime:
     """Convert a POSIX timestamp to a datetime."""
+    if timestamp > 1e12:
+        # Timestamp is in milliseconds -> convert to seconds
+        timestamp = int(timestamp / 1000)
     return dt.datetime.fromtimestamp(timestamp, tz=dt.UTC)
+
+
+def bool_to_string(b: bool) -> str:
+    """Convert a boolean to a string equivalent."""
+    return "true" if b else "false"

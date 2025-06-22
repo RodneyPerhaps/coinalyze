@@ -13,6 +13,7 @@ repos:
           - --unsafe
       - id: end-of-file-fixer
       - id: trailing-whitespace
+
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: v0.12.0
     hooks:
@@ -22,19 +23,26 @@ repos:
           [--fix, --show-fixes, --config=pyproject.toml, --unsafe-fixes]
       - id: ruff-format
         types_or: [python, pyi, jupyter]
-        args: [--config=pyproject.toml]
+        args: [--config=pyproject.toml, --diff]
 
-  - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.22
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0
     hooks:
-      - id: mdformat
-        args: ["--number", "--align-semantic-breaks-in-lists"]
-        additional_dependencies:
-          - mdformat-gfm
-          - mdformat-black
-          - mdformat-mkdocs
-          - mdformat-frontmatter
-        exclude: "README.md"
+      - id: mypy
+        language: system
+        types: [python]
+        args:
+          [
+            "--config-file=pyproject.toml",
+            # https://mypy.readthedocs.io/en/stable/running_mypy.html#following-imports
+            "--follow-imports=silent",
+          ]
+
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.8.1
+    hooks:
+      - id: nbstripout
+        args: [--keep-output]
 
   - repo: local
     hooks:
@@ -49,9 +57,3 @@ repos:
             "--rcfile=pyproject.toml",
             "--init-hook=import sys; sys.setrecursionlimit(10000)",
           ]
-
-  - repo: https://github.com/kynan/nbstripout
-    rev: 0.8.1
-    hooks:
-      - id: nbstripout
-        exclude: ^notebooks/

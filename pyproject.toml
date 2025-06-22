@@ -1,10 +1,11 @@
 [project]
 name = "coinalyze"
-version = "0.1.0"
-description = "Coinalyze API client"
-readme = "README.md"
+description = "Unofficial Python client for coinalyze.net REST API"
+license = "MIT"
+license-files = ["LICENSE"]
+dynamic = ["readme", "version"]
 authors = [
-    { name = "ivarurdalen", email = "ivar.urdalen@gmail.com" }
+    { name = "Ivar Soares Urdalen", email = "ivar.urdalen@gmail.com" }
 ]
 requires-python = ">=3.11"
 classifiers = [
@@ -12,6 +13,9 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
     "httpx",
@@ -24,26 +28,112 @@ pandas = [
     "pandas",
 ]
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/coinalyze"]
-
 [dependency-groups]
 dev = [
     "environs",
     "ipykernel",
     "mypy",
+    "pandas-stubs",
     "pre-commit",
     "pylint",
     "ruff",
 ]
+test = [
+    "coverage[toml]>=7.9.1",
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+    "pytest-pretty>=1.3.0",
+    "respx",
+]
+
+[project.urls]
+Homepage = "https://github.com/ivarurdalen/coinalyze"
+Source = "https://github.com/ivarurdalen/coinalyze"
+Changelog = "https://github.com/ivarurdalen/coinalyze/blob/main/CHANGELOG.md"
+
+# Building and publishing
+
+[build-system]
+requires = ["hatchling", "hatch-fancy-pypi-readme"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/coinalyze/__version__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/coinalyze"]
+
+[tool.hatch.build.targets.sdist]
+only-include = [
+  "CHANGELOG.md",
+  "LICENSE",
+  "README.md",
+  "pyproject.toml",
+  "/src/coinalyze",
+  "/tests",
+]
+
+[tool.hatch.metadata.hooks.fancy-pypi-readme]
+content-type = "text/markdown"
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+path = "README.md"
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
+# replace relative links with absolute links
+pattern = '\[(.+?)\]\(((?!https?://)\S+?)\)'
+replacement = '[\1](https://github.com/ivarurdalen/coinalyze/tree/main/\g<2>)'
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+publish-url = "https://upload.pypi.org/legacy/"
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+
+# Testing
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+data_file = ".coverage"
+source = ["src/coinalyze"]
+omit = ["*/tests/*", "*/__init__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.tox]
+requires = ["tox>=4"]
+env_list = ["3.11", "3.12", "3.13"]
+
+[tool.tox.env_run_base]
+description = "Run tests under {base_python}"
+commands = [["pytest", { replace = "posargs", default = ["tests"], extend = true }]]
+dependency_groups = [
+  "test",
+]
+
+# Type checking
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+check_untyped_defs = false
+
+# Linting and formatting
 
 [tool.ruff]
+line-length = 120
+output-format = "grouped"
 target-version = "py311"
-line-length = 100
 
 [tool.ruff.format]
 skip-magic-trailing-comma = true
@@ -57,6 +147,7 @@ ignore = [
     "D105",   # missing-docstring-in-magic-method
     "D107",   # missing-docstring-in-init
     "D212",   # multi-line-summary-first-line
+    "C408",   # unnecessary-collection-call
 ]
 select = [
     "ARG001",  # unused-function-argument
@@ -71,10 +162,18 @@ select = [
 ]
 extend-select = ["D213"]
 
+[tool.ruff.lint.isort]
+known-first-party = ["coinalyze", "tests"]
+split-on-trailing-comma = false
+
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = [
     "F401", # unused-import
     "F403", # unused-wildcard-import
+]
+"tests/*" = [
+    "ARG001", # unused-function-argument
+    "D103", # missing-docstring-in-public-function
 ]
 
 [tool.ruff.lint.pydocstyle]
@@ -96,5 +195,12 @@ disable = [
     "too-many-arguments",
     "too-many-branches",
     "too-many-positional-arguments",
+    "unused-argument",
+
+    # Allow import of pandas inside a method
+    "import-outside-toplevel",
+
+    # Issues with pytest
+    "redefined-outer-name",
 ]
 enable = "useless-suppression"

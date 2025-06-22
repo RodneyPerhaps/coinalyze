@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+
+pytest --cov=src/coinalyze --cov-report=term-missing --cov-report=html

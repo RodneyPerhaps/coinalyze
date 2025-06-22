@@ -1,9 +1,11 @@
 # coinalyze
 
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Ruff][ruff-badge]](https://github.com/astral-sh/ruff)
+[![PyPI][pypi-badge]](https://pypi.org/project/coinalyze/)
+[![Python versions][python-versions-badge]](https://github.com/ivarurdalen/coinalyze)
+[![MIT License Badge][license-badge]][license]
 
-This is an unofficial lightweight Python client for [coinalyze.net REST API](https://api.coinalyze.net/v1/doc/).
+This is an unofficial Python client for [coinalyze.net REST API](https://api.coinalyze.net/v1/doc/).
 
 ## Features
 
@@ -41,15 +43,18 @@ future_markets_df = response_to_df(client.get_future_markets())
 # Get the current predicted funding rate
 response = client.get_current_predicted_funding_rate("BTCUSDT_PERP.A")
 
-# Get the open interest history for a symbol
-oi_df = history_response_to_df(
-    client.get_history(
+# Get the open interest history as a DataFrame for a symbol
+oi_df = client.get_history_df(
         endpoint=HistoryEndpoint.OI,
         symbols="BTCUSDT_PERP.A",
         interval=Interval.H4,
         start="2025-06-01",
         end="2025-06-20",
-    ),
-    endpoint=HistoryEndpoint.OI,
-)
+    )
 ```
+
+[ruff-badge]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+[license]: ./LICENSE
+[license-badge]: https://img.shields.io/badge/License-MIT-blue.svg
+[python-versions-badge]: https://img.shields.io/pypi/pyversions/coinalyze.svg
+[pypi-badge]: https://img.shields.io/pypi/coinalyze.svg

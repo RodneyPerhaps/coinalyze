@@ -1,4 +1,5 @@
 from enum import StrEnum
+from typing import Self
 
 
 class Interval(StrEnum):
@@ -16,7 +17,20 @@ class Interval(StrEnum):
     D1 = "daily"
 
 
-class Endpoint(StrEnum):
+class BaseEndpoint(StrEnum):
+    """Base endpoints."""
+
+    @classmethod
+    def from_string(cls, endpoint: str) -> Self:
+        """Get the BaseEndpoint enum from a string."""
+        try:
+            return cls(endpoint)
+        except ValueError as e:
+            members = ", ".join([member.value for member in cls])
+            raise ValueError(f"Unknown endpoint: {endpoint}. " + f"Supported values are: {members}.") from e
+
+
+class Endpoint(BaseEndpoint):
     """Supporting endpoints."""
 
     EXCHANGES = "exchanges"
@@ -24,7 +38,7 @@ class Endpoint(StrEnum):
     SPOT_MARKETS = "spot-markets"
 
 
-class CurrentEndpoint(StrEnum):
+class CurrentEndpoint(BaseEndpoint):
     """Current endpoints."""
 
     OI = "open-interest"
@@ -32,12 +46,15 @@ class CurrentEndpoint(StrEnum):
     PREDICTED_FUNDING_RATE = "predicted-funding-rate"
 
 
-class HistoryEndpoint(StrEnum):
+class HistoryEndpoint(BaseEndpoint):
     """History endpoints."""
 
-    OI = "open-interest-history"
-    FUNDING_RATE = "funding-rate-history"
-    PREDICTED_FUNDING_RATE = "predicted-funding-rate-history"
-    LIQUIDATION = "liquidation-history"
-    LSRATIO = "long-short-ratio-history"
-    OHLCV = "ohlcv-history"
+    OI = "open-interest"
+    FUNDING_RATE = "funding-rate"
+    PREDICTED_FUNDING_RATE = "predicted-funding-rate"
+    LIQUIDATION = "liquidation"
+    LSRATIO = "long-short-ratio"
+    OHLCV = "ohlcv"
+
+    def __str__(self) -> str:
+        return self.value + "-history"
