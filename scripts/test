@@ -1,3 +1,8 @@
 #!/usr/bin/sh
 
-pytest --cov=src/coinalyze --cov-report=term-missing --cov-report=html
+if [ "$1" = "--coverage" ]; then
+    shift
+    pytest --cov=src/coinalyze --cov-report=term-missing --cov-report=html "$@"
+else
+    pytest "$@"
+fi
