@@ -30,7 +30,7 @@ See more examples in the [coinalyze_client notebook](examples/coinalyze_client.i
 
 ```python
 import os
-from coinalyze import CoinalyzeClient, HistoryEndpoint, Interval, response_to_df, history_response_to_df
+from coinalyze import CoinalyzeClient, HistoryEndpoint, Interval, response_to_df
 
 client = CoinalyzeClient(api_key=os.getenv("COINALYZE_API_KEY"))
 
@@ -57,4 +57,4 @@ oi_df = client.get_history_df(
 [license]: ./LICENSE
 [license-badge]: https://img.shields.io/badge/License-MIT-blue.svg
 [python-versions-badge]: https://img.shields.io/pypi/pyversions/coinalyze.svg
-[pypi-badge]: https://img.shields.io/pypi/coinalyze.svg
+[pypi-badge]: https://img.shields.io/pypi/v/coinalyze

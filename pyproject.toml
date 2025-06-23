@@ -88,6 +88,7 @@ replacement = '[\1](https://github.com/ivarurdalen/coinalyze/tree/main/\g<2>)'
 name = "pypi"
 url = "https://pypi.org/simple"
 publish-url = "https://upload.pypi.org/legacy/"
+default = true
 
 [[tool.uv.index]]
 name = "testpypi"
@@ -111,8 +112,9 @@ show_missing = true
 skip_covered = true
 
 [tool.tox]
-requires = ["tox>=4"]
-env_list = ["3.11", "3.12", "3.13"]
+requires = ["tox>=4", "tox-uv>=1.1"]
+env_list = ["3.13", "3.12", "3.11"]
+skip_missing_interpreters = true
 
 [tool.tox.env_run_base]
 package = "wheel"

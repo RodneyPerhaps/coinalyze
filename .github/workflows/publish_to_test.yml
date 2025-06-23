@@ -1,0 +1,34 @@
+name: Publish to TestPyPI
+
+on: workflow_dispatch
+
+env:
+  dists-artifact-name: python-package-distributions
+
+jobs:
+  call-build:
+    uses: ./.github/workflows/build.yml
+
+  publish-to-testpypi:
+    name: Publish to TestPyPI
+    needs:
+    - call-build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/coinalyze
+
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ env.dists-artifact-name }}
+        path: dist/
+    - name: Publish to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
