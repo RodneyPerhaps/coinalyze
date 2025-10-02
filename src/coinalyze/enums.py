@@ -1,5 +1,13 @@
-from enum import StrEnum
-from typing import Self
+try:
+    from enum import StrEnum          # Py3.11+
+except ImportError:
+    from strenum import StrEnum       # backport for Py3.7+
+
+try:
+    from typing import Self          # 3.11+
+except ImportError:
+    from typing_extensions import Self
+
 
 
 class Interval(StrEnum):
